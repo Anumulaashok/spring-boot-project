@@ -14,7 +14,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 
-//@Data
+
 @NoArgsConstructor
 @Entity
 public class Products {
@@ -26,8 +26,10 @@ public class Products {
 	
 	private String name;
 	private String url;
+	private String url2;
 	private String desciption;
 	private double price;
+	private double price2;
 	private boolean isAvail;
 	
 	@ManyToOne(cascade = CascadeType.ALL)
@@ -100,6 +102,22 @@ public class Products {
 
 	public void setDesciption(String desciption) {
 		this.desciption = desciption;
+	}
+
+	public String getUrl2() {
+		return url2;
+	}
+
+	public void setUrl2(String url2) {
+		this.url2 = url2;
+	}
+
+	public double getPrice2() {
+		return price2;
+	}
+
+	public void setPrice2(double price2) {
+		this.price2 = price2;
 	}
 	
 	

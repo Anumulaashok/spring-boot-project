@@ -1,14 +1,16 @@
 package com.example.demo.Service;
 
 import com.example.demo.Exceptions.CartException;
-import com.example.demo.Model.Products;
+import com.example.demo.Exceptions.UserException;
+import com.example.demo.Model.Cart;
 
 public interface CartService {
 	
-	public String addToCart(Products product,Integer UserId)throws  CartException;
+	public String addToCart(Integer  id,String Uuid)throws  CartException, UserException;
 	
-	public String removeItemFromCart(Integer id,Integer UserId)throws CartException;
+	public Cart removeItemFromCart(Integer id,String Uuid)throws CartException, UserException;
 
-	public String quantity(Integer id,Integer quantity,Integer UserId)throws CartException;
+	public Cart updatequantity(Integer id,Integer quantity,String UuId)throws CartException, UserException;
 	
+	public Cart getCart(String uuid)throws CartException,UserException;
 }

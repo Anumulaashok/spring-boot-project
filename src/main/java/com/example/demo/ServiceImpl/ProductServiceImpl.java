@@ -100,6 +100,9 @@ public class ProductServiceImpl implements ProductService{
 	}
 	
 	
-	
+	public List<Products> getProdutsInSortedASE(Integer id)throws ProductException{
+		
+		
+	}
 	
 }

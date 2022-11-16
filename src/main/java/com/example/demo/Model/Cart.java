@@ -11,8 +11,6 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -34,9 +32,6 @@ public class Cart {
 	@OneToOne(cascade = CascadeType.ALL)
 	private User user;
 	
-	
-	@OneToMany
-	@JsonIgnore
-	private List<Products> products=new ArrayList<Products>();
-
+	@OneToMany(cascade = CascadeType.ALL,mappedBy = "cart")
+	private List<CartItem> cartItem=new ArrayList<>();
 }
