@@ -1,5 +1,7 @@
 package com.example.demo.ServiceImpl;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -44,7 +46,15 @@ public class CategoryServiceImpl implements CategoryService{
 		
 	}
 
-	
+
+	@Override
+	public List<Category> getAllCategory() throws CategoryException {
+		List<Category> categories=	categoryDao.findAll();
+		if(categories.size()==0) {
+			throw new CategoryException("No Category found");
+		}
+		return categories;
+	}
 
 	@Override
 	public Category updateCategory(Category category,Integer AdminId) throws CategoryException {
@@ -70,6 +80,9 @@ public class CategoryServiceImpl implements CategoryService{
 		
 		return "Category Deleted";
 	}
+
+
+
 	
 	
 }

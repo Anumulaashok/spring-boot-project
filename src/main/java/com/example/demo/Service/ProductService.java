@@ -20,4 +20,8 @@ public interface ProductService {
 	public List<Products> getAllProducts(Integer id)throws ProductException;
 	
 	public Products getProductByID(Integer id) throws ProductException;
+	
+	public List<Products> getProdutsInSortedASE(Integer id) throws ProductException;
+	
+	public List<Products> getProdutsInSortedDESC(Integer id) throws ProductException;
 }

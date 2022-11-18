@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -15,6 +16,7 @@ import com.example.demo.DTO_and_ENUM.CategoryDto;
 import com.example.demo.DTO_and_ENUM.ProductDto;
 import com.example.demo.Exceptions.AdminException;
 import com.example.demo.Exceptions.CategoryException;
+import com.example.demo.Exceptions.ProductException;
 import com.example.demo.Model.Admin;
 import com.example.demo.Model.Category;
 import com.example.demo.Model.Products;
@@ -26,6 +28,8 @@ import io.swagger.v3.oas.annotations.parameters.RequestBody;
 
 @Controller
 public class AdminController {
+
+	private static final Products Pro = null;
 
 	@Autowired
 	private AdminService adminService;
@@ -64,7 +68,7 @@ public class AdminController {
 	}
 	
 	
-	@PostMapping("category/add/{id}")
+	@PostMapping("/category/add/{id}")
 	public ResponseEntity<Category> addCategory(@RequestBody CategoryDto categoryDto,@PathVariable("id") Integer id) throws CategoryException{
 		
 		
@@ -74,12 +78,48 @@ public class AdminController {
 		
 	}
 	
-	@PostMapping("product/add")
+	@PutMapping("/category/update/{id}")
+	public ResponseEntity<Category> updateTheCategory(@RequestBody Category category,@PathVariable("id") Integer id) throws CategoryException{
+		
+		
+		Category c1= categoryService.updateCategory(category, id);
+		
+		return new ResponseEntity<Category>(c1,HttpStatus.CREATED);
+		
+	}
+	@DeleteMapping("/category/delete")
+	public ResponseEntity<String> deleteTheCategory(@RequestParam("categoryId") Integer category,@RequestParam("id") Integer id) throws CategoryException, AdminException{
+		
+		
+		String c1= categoryService.deleteCategory(category, id);
+		
+		return new ResponseEntity<String>(c1,HttpStatus.CREATED);
+		
+	}
+	
+	@PostMapping("/product/add") 
 	public ResponseEntity<String> addProduct(@RequestBody ProductDto product,@RequestParam("AdminId") Integer adminid,@RequestParam("CategoryId") Integer categoryId ) throws CategoryException{
 		
 		boolean b1= productService.AddProduct(categoryId, adminid, product);
 		
 		return new ResponseEntity<String>("Product added succesfully ",HttpStatus.OK);
+	}
+	
+	@PutMapping("/product/update")
+	public ResponseEntity<Products> updateProduct(@RequestBody ProductDto Product ,@PathVariable("productid") Integer productId) throws ProductException 
+	{
+		
+		Products prosctsss= productService.updateProduct(productId,Product);
+		
+		return new ResponseEntity<Products>(prosctsss , HttpStatus.OK);
+	}
+	
+	@DeleteMapping("/product/delete/{id}")
+	public ResponseEntity<String> deleteProduct(@PathVariable Integer id) throws AdminException, ProductException{
+		
+		String str= productService.deleteProduct(id);
+		
+		return new ResponseEntity<String>(str, HttpStatus.OK);
 	}
 	
 }
