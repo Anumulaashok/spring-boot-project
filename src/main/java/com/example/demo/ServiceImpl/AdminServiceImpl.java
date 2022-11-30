@@ -1,19 +1,29 @@
 package com.example.demo.ServiceImpl;
 
+import java.time.LocalDate;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.DTO_and_ENUM.AdminDto;
+import com.example.demo.DTO_and_ENUM.UserLoginDto;
 import com.example.demo.Dao.AdminDao;
+import com.example.demo.Dao.LogInDao;
 import com.example.demo.Exceptions.AdminException;
 import com.example.demo.Model.Admin;
+import com.example.demo.Model.LogIn;
 import com.example.demo.Service.AdminService;
+
+import net.bytebuddy.utility.RandomString;
 
 @Service
 public class AdminServiceImpl implements AdminService{
 	
 	@Autowired
 	private AdminDao admindao;
+	
+	@Autowired
+	private LogInDao logInDao;
 
 	@Override
 	public Admin saveAdmin(AdminDto admin) throws AdminException {
@@ -24,7 +34,7 @@ public class AdminServiceImpl implements AdminService{
 		if(ad!=null)
 			throw new AdminException("User Already Exist With The UserName ->"+admin.getUserName());
 		
-			Admin admin1= new Admin(admin.getUserName().trim(), admin.getPassword().trim());
+			Admin admin1= new Admin(admin.getEmail(),admin.getName(),admin.getUserName().trim(), admin.getPassword().trim());
 			
 			return admindao.save(admin1);
 		
@@ -67,9 +77,35 @@ public class AdminServiceImpl implements AdminService{
 		if(!(ad.getPassword()).equals(oldPassword)) {
 			throw new AdminException("Please Enter correct Password ");
 		}
-		Admin admin= new Admin(userName.trim(), newPassword.trim());
+		admin1.setPassword(newPassword);
 		
-		return admindao.save(admin);
+		return admindao.save(admin1);
+	}
+
+
+	@Override
+	public LogIn adminLogIn(AdminDto admindto) throws AdminException {
+		
+		Admin admin= admindao.findByUserName(admindto.getUserName());
+		
+		if(admin==null) {
+			throw new AdminException("User not Exit");
+		}
+		LogIn login= new LogIn(admin.getUserName(), admin.getPassword(), RandomString.make(4), LocalDate.now());
+		
+		LogIn logindetails=  logInDao.save(login);
+				
+		return logindetails;
+	}
+
+
+	@Override
+	public String adminLogOut(String uuid) throws AdminException {
+		LogIn login=logInDao.findByUuid(uuid).orElseThrow(()-> new AdminException("Check Again"));
+		
+		logInDao.delete(login);
+		
+		return "LogOut Successfull";
 	}
 
 }

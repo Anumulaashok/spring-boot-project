@@ -20,6 +20,7 @@ public class Admin {
 	private Integer id;
 	private String email;
 	private String UserName;
+	private String name;
 	private String Password;
 
 	
@@ -27,8 +28,10 @@ public class Admin {
 	@JsonIgnore
 	private Category category;
 	
-	public Admin(String userName, String password) {
+	public Admin(String email,String name, String userName, String password) {
 		super();
+		this.email=email;
+		this.name=name;
 		this.UserName = userName;
 		this.Password = password;
 	}
@@ -64,6 +67,22 @@ public class Admin {
 
 	public void setCategory(Category category) {
 		this.category = category;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 	
 	

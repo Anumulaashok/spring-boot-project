@@ -41,10 +41,10 @@ public class AdminController {
 	private ProductService productService;
 	
 	@PostMapping("/admin/add")
-	public ResponseEntity<Admin> addAdmin(@RequestBody AdminDto admin) throws AdminException
+	public ResponseEntity<Admin> addAdmin(@RequestBody AdminDto admin2) throws AdminException
 	{
 		
-		Admin admin1=adminService.saveAdmin(admin);
+		Admin admin1=adminService.saveAdmin(admin2);
 		
 		return new ResponseEntity<Admin>(admin1,HttpStatus.CREATED);
 		
@@ -68,8 +68,8 @@ public class AdminController {
 	}
 	
 	
-	@PostMapping("/category/add/{id}")
-	public ResponseEntity<Category> addCategory(@RequestBody CategoryDto categoryDto,@PathVariable("id") Integer id) throws CategoryException{
+	@PostMapping("/category/add/{uuid}")
+	public ResponseEntity<Category> addCategory(@RequestBody CategoryDto categoryDto,@PathVariable("uuid") String id) throws CategoryException{
 		
 		
 		Category c1= categoryService.addCategory(categoryDto, id);
@@ -79,7 +79,7 @@ public class AdminController {
 	}
 	
 	@PutMapping("/category/update/{id}")
-	public ResponseEntity<Category> updateTheCategory(@RequestBody Category category,@PathVariable("id") Integer id) throws CategoryException{
+	public ResponseEntity<Category> updateTheCategory(@RequestBody Category category,@PathVariable("uuid") String id) throws CategoryException{
 		
 		
 		Category c1= categoryService.updateCategory(category, id);
@@ -88,7 +88,7 @@ public class AdminController {
 		
 	}
 	@DeleteMapping("/category/delete")
-	public ResponseEntity<String> deleteTheCategory(@RequestParam("categoryId") Integer category,@RequestParam("id") Integer id) throws CategoryException, AdminException{
+	public ResponseEntity<String> deleteTheCategory(@RequestParam("categoryId") Integer category,@PathVariable("uuid") String id) throws CategoryException, AdminException{
 		
 		
 		String c1= categoryService.deleteCategory(category, id);
@@ -98,26 +98,26 @@ public class AdminController {
 	}
 	
 	@PostMapping("/product/add") 
-	public ResponseEntity<String> addProduct(@RequestBody ProductDto product,@RequestParam("AdminId") Integer adminid,@RequestParam("CategoryId") Integer categoryId ) throws CategoryException{
+	public ResponseEntity<String> addProduct(@RequestBody ProductDto product,@PathVariable("uuid") String uuid,@RequestParam("CategoryId") Integer categoryId ) throws CategoryException, AdminException{
 		
-		boolean b1= productService.AddProduct(categoryId, adminid, product);
+		boolean b1= productService.AddProduct(categoryId,uuid, product);
 		
 		return new ResponseEntity<String>("Product added succesfully ",HttpStatus.OK);
 	}
 	
 	@PutMapping("/product/update")
-	public ResponseEntity<Products> updateProduct(@RequestBody ProductDto Product ,@PathVariable("productid") Integer productId) throws ProductException 
+	public ResponseEntity<Products> updateProduct(@RequestBody ProductDto Product ,@PathVariable("productid") Integer productId,@RequestParam("uuid") String uuid) throws ProductException 
 	{
 		
-		Products prosctsss= productService.updateProduct(productId,Product);
+		Products prosctsss= productService.updateProduct(productId,Product, uuid);
 		
 		return new ResponseEntity<Products>(prosctsss , HttpStatus.OK);
 	}
 	
 	@DeleteMapping("/product/delete/{id}")
-	public ResponseEntity<String> deleteProduct(@PathVariable Integer id) throws AdminException, ProductException{
+	public ResponseEntity<String> deleteProduct(@PathVariable Integer id,@PathVariable("uuid") String uuid) throws AdminException, ProductException{
 		
-		String str= productService.deleteProduct(id);
+		String str= productService.deleteProduct(id,uuid);
 		
 		return new ResponseEntity<String>(str, HttpStatus.OK);
 	}

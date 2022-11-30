@@ -10,13 +10,13 @@ import com.example.demo.Model.Category;
 public interface CategoryService {
 
 	
-	public Category addCategory(CategoryDto categoryDto,Integer Adminid) throws CategoryException;
+	public Category addCategory(CategoryDto categoryDto,String uuid) throws CategoryException;
 	
 	public List<Category> getAllCategory()throws CategoryException;
 	
-	public Category updateCategory(Category category,Integer AdminId) throws CategoryException;
+	public Category updateCategory(Category category,String uuid) throws CategoryException;
 	
-	public String deleteCategory(Integer id,Integer AdminID)throws CategoryException, AdminException;
+	public String deleteCategory(Integer id,String uuid)throws CategoryException, AdminException;
 	
 	
 }

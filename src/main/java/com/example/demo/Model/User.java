@@ -28,12 +28,12 @@ public class User {
 	private Cart cart;
 //	private Order orders;
 
-	public User(String userName, String password,String email ) {
+	public User(String userName, String password ) {
 		super();
 		
 		this.userName = userName;
 		this.password = password;
-		this.email = email;
+		
 	}
 	
 	

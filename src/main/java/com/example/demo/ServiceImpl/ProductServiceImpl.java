@@ -8,11 +8,14 @@ import org.springframework.stereotype.Service;
 import com.example.demo.DTO_and_ENUM.ProductDto;
 import com.example.demo.Dao.AdminDao;
 import com.example.demo.Dao.CategoryDao;
+import com.example.demo.Dao.LogInDao;
 import com.example.demo.Dao.ProductsDao;
+import com.example.demo.Exceptions.AdminException;
 import com.example.demo.Exceptions.CategoryException;
 import com.example.demo.Exceptions.ProductException;
 import com.example.demo.Model.Admin;
 import com.example.demo.Model.Category;
+import com.example.demo.Model.LogIn;
 import com.example.demo.Model.Products;
 import com.example.demo.Service.ProductService;
 
@@ -27,14 +30,18 @@ public class ProductServiceImpl implements ProductService {
 
 	@Autowired
 	private AdminDao admindao;
+	
+	@Autowired
+	private LogInDao logInDao;
 
 	@Override
-	public boolean AddProduct(Integer id, Integer AdminId, ProductDto product) throws CategoryException {
+	public boolean AddProduct(Integer id, String uuid, ProductDto product) throws CategoryException, AdminException {
 
-		//
-		Admin A1 = admindao.findById(AdminId)
-				.orElseThrow(() -> new CategoryException("Admin Not Avail With the id -> " + AdminId));
-
+		Admin admin=isValidAdmin(uuid);
+		Admin A1 = admindao.findById(admin.getId())
+				.orElseThrow(() -> new CategoryException("Admin Not Avail With the id -> " + admin.getId()));
+		
+		
 		Category c1 = categoryDao.findById(id).orElseThrow(() -> new CategoryException("Category Not Found"));
 
 		System.out.println(c1.toString());
@@ -50,7 +57,7 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public Products updateProduct(Integer ProductId, ProductDto product) throws ProductException {
+	public Products updateProduct(Integer ProductId, ProductDto product,String uuid) throws ProductException {
 
 		Products p1 = productsDao.findById(ProductId)
 				.orElseThrow(() -> new ProductException("NO Product found with the Id ->" + ProductId));
@@ -64,7 +71,7 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public String deleteProduct(Integer ProductId) throws ProductException {
+	public String deleteProduct(Integer ProductId,String uuid) throws ProductException {
 
 		Products p1 = productsDao.findById(ProductId)
 				.orElseThrow(() -> new ProductException("NO Product found with the Id ->" + ProductId));
@@ -74,7 +81,7 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public Products ChangeStatus(Integer ProductId, boolean bool) throws ProductException {
+	public Products ChangeStatus(Integer ProductId, boolean bool,String uuid) throws ProductException {
 
 		Products p1 = productsDao.findById(ProductId)
 				.orElseThrow(() -> new ProductException("NO Product found with the Id ->" + ProductId));
@@ -113,6 +120,17 @@ public class ProductServiceImpl implements ProductService {
 		
 		return productsDao.getProductsInDESC(id);
 
+	}
+	
+	public Admin isValidAdmin(String uuid)throws AdminException {
+		
+		LogIn login=logInDao.findByUuid(uuid).orElseThrow(()-> new AdminException("Not valid admin"));
+		Admin admin=admindao.findByUserName(login.getUsername());
+		if(admin==null) {
+			throw new AdminException("admin not found");
+		}
+		
+		return admin;
 	}
 
 }

@@ -23,7 +23,7 @@ public class UserServiceImpl implements UserService{
 		if(ad!=null)
 			throw new UserException("User AlreadyExit With The UserName ->"+User.getUserName());
 		
-			User User1= new User(User.getUserName().trim(), User.getPassword().trim(),User.getEmail().trim());
+			User User1= new User(User.getUserName().trim(), User.getPassword().trim());
 			
 			return userdao.save(User1);
 		

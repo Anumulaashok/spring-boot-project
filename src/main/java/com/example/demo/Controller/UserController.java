@@ -9,22 +9,20 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.example.demo.Dao.CategoryDao;
 import com.example.demo.Exceptions.CartException;
+import com.example.demo.Exceptions.CategoryException;
 import com.example.demo.Exceptions.ProductException;
 import com.example.demo.Exceptions.UserException;
 import com.example.demo.Model.Cart;
+import com.example.demo.Model.Category;
 import com.example.demo.Model.Products;
 import com.example.demo.Service.CartService;
 import com.example.demo.Service.CategoryService;
 import com.example.demo.Service.ProductService;
 import com.example.demo.Service.UserService;
-
-import ch.qos.logback.core.pattern.util.RegularEscapeUtil;
 
 @Controller
 public class UserController {
@@ -40,6 +38,19 @@ public class UserController {
 
 	@Autowired
 	private CartService cartService;
+	
+	
+	
+	
+	@GetMapping("get/catergories")
+	public ResponseEntity<List<Category>> getAllCategories()throws CategoryException{
+	
+		List<Category> categories= categoryService.getAllCategory();
+		
+		return new ResponseEntity<List<Category>>(categories,HttpStatus.OK);
+	}
+	
+	
 
 	@GetMapping("get/products/{id}")
 	public ResponseEntity<List<Products>> getAllProduct(@PathVariable("id") Integer id) throws ProductException{
