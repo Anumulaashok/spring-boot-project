@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.Dao.CartDao;
+import com.example.demo.Dao.CartItemDao;
 import com.example.demo.Dao.LogInDao;
 import com.example.demo.Dao.ProductsDao;
 import com.example.demo.Dao.UserDao;
@@ -33,10 +34,11 @@ public class CartServiceImpl implements CartService{
 	@Autowired
 	private LogInDao logInDao;
 	
-	
+	@Autowired
+	private CartItemDao cartItemDao;
 
 	@Override
-	public String addToCart(Integer id, String Uuid) throws CartException, UserException {
+	public User addToCart(Integer id, String Uuid) throws CartException, UserException {
 		
 		LogIn userLogeedIn= logInDao.findByUuid(Uuid).orElseThrow(()-> new UserException("User Not found"));
 		
@@ -52,31 +54,42 @@ public class CartServiceImpl implements CartService{
 		}
 		
 		Cart cart= user.getCart();
-		CartItem item= new CartItem(products.getId(), products.getPrice(), 1, cart);
-		if(cart.getSize()<=0) {
-			cart.setId(user.getId());
+		System.out.println("Hello");
+		
+		CartItem item= new CartItem(products.getId(), products.getPrice(), 1,cart);
+		if(cart.getCartItem().size()<=0) {
 			cart.setSize(1);
 			cart.setTotal(products.getPrice());
-			cart.getCartItem().add(item);
-			cart.setUser(user);
-			
+			cart.getCartItem().add(item);	
 		}
 		else {
 		List<CartItem>	items=cart.getCartItem();
+		boolean b=false;
+		double ctotal=0;
+		int cquantity=0;
 		for(CartItem i:items) {
 			if(i.getProductId()==products.getId()) {
+				
 				i.setPrice(i.getPrice()+products.getPrice());
-				i.setQuantity(i.getQuantity()+1);
-				cart.setSize(cart.getSize()+1);
-				cart.setTotal(cart.getTotal()+i.getPrice());
-				break;
+				i.setQuantity(i.getQuantity()+1);				
+				b= true;
 			}
+			ctotal+=i.getPrice();
+			cquantity+=i.getQuantity();
 		}
-		
+		if(b==false) {
+			
+			items.add(item);
+			cart.setSize(cart.getCartItem().size());
+			cart.setTotal(cart.getTotal()+item.getPrice());
+			ctotal+=item.getPrice();
+			cquantity+=1;
+		}
+		cart.setSize(cquantity);
+		cart.setTotal(ctotal);
 		}
 		cartDao.save(cart);
-		
-		return cart.toString();
+		return user;
 	}
 
 	@Override
@@ -104,21 +117,22 @@ public class CartServiceImpl implements CartService{
 		}
 		else {
 			List<CartItem>	items=cart.getCartItem();
-		for(CartItem i:items) {
-			if(i.getProductId()==products.getId()) {
-				
-				cart.setSize(cart.getSize()-1);
-				cart.setTotal(cart.getTotal()-i.getPrice());
-				item=i;
-				break;
+			double ctotal=0;
+			int cquantity=0;
+			CartItem ii= new CartItem();
+			for(CartItem i:items) {
+				if(i.getProductId()==products.getId()) {
+					ii=i;
+				}
+				else {
+					ctotal+=i.getPrice();
+					cquantity+=i.getQuantity();
+				}
 			}
-		}
-		if(item==null) {
-			throw new CartException("Item not found");
-		}
-		items.remove(item);
-	
-		
+			if(ii!=null)
+			cart.getCartItem().remove(ii);
+			cart.setSize(cquantity);
+			cart.setTotal(ctotal);
 		}
 		cartDao.save(cart);
 		
@@ -152,14 +166,15 @@ public class CartServiceImpl implements CartService{
 		List<CartItem>	items=cart.getCartItem();
 		boolean b=false;
 		for(CartItem i:items) {
-			if(i.getProductId()==products.getId()&&i.getQuantity()==1) {
+			if(i.getProductId()==products.getId()&&i.getQuantity()==1&&quantity==0) {
 				removeItemFromCart(id, UuId);
 				break;
 			}
-			if(i.getProductId()==products.getId()&&i.getQuantity()>1) {
-				i.setPrice(i.getPrice()-products.getPrice());
-				i.setQuantity(i.getQuantity()-1);
-				cart.setSize(cart.getSize()-1);
+			if(i.getProductId()==products.getId()&&quantity>0) {
+				
+				i.setPrice(i.getPrice()*quantity);
+				i.setQuantity(quantity);
+				cart.setSize(cart.getSize()-i.getQuantity()+quantity);
 				cart.setTotal(cart.getTotal()-i.getPrice());
 				b=true;
 				break;

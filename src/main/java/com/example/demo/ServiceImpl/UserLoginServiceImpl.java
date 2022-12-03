@@ -1,8 +1,11 @@
 package com.example.demo.ServiceImpl;
 
+import java.time.LocalDate;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.demo.DTO_and_ENUM.UserDto;
 import com.example.demo.DTO_and_ENUM.UserLoginDto;
 import com.example.demo.Dao.LogInDao;
 import com.example.demo.Dao.UserDao;
@@ -24,9 +27,9 @@ public class UserLoginServiceImpl implements UserLoginService{
 	private LogInDao login;
 	
 	@Override
-	public UserLoginDto userLogin(LogIn user1)  throws UserException{
+	public UserLoginDto userLogin(UserDto user1)  throws UserException{
 		
-		User user = signup.findByUserName(user1.getUsername());
+		User user = signup.findByUserName(user1.getUserName());
 		
 		if(user==null) {
 		
@@ -40,18 +43,19 @@ public class UserLoginServiceImpl implements UserLoginService{
 		
 		}
 		
-		LogIn ul=login.findByUsername(user1.getUsername());
+		LogIn ul=login.findByUsername(user1.getUserName());
 		
 		if(ul!=null) {
 		
 			throw new UserException("User Alredy loged in");
 		
 		}
+		String uid=RandomString.make(4);
 		
-		user1.setUuid(RandomString.make(4));
+		LogIn log= new LogIn(user1.getUserName(), user1.getPassword(), uid, LocalDate.now());
 		
-		LogIn us=login.save(user1);
-		UserLoginDto usd=new UserLoginDto(user.getUserName(), user1.getUuid());
+		LogIn us=login.save(log);
+		UserLoginDto usd=new UserLoginDto(user.getUserName(), us.getUuid());
 	
 		return usd;
 	}

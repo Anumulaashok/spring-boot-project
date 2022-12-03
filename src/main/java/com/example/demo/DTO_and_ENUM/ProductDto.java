@@ -11,7 +11,9 @@ public class ProductDto {
 
 	private String name;
 	private String url;
+	private String url2;
 	private String desciption;
 	private double price;
+	private double price2;
 	private boolean isAvail;
 }

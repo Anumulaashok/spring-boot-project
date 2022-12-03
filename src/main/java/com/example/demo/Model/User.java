@@ -7,6 +7,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,10 +24,11 @@ public class User {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer id;
 	private String email;
+	private String name;
 	private String userName;
 	private String password;
 	
-	@OneToOne(cascade = CascadeType.ALL,mappedBy = "user")
+	@OneToOne(cascade = CascadeType.ALL)
 	private Cart cart;
 //	private Order orders;
 

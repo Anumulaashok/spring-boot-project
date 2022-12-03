@@ -3,10 +3,11 @@ package com.example.demo.Service;
 import com.example.demo.Exceptions.CartException;
 import com.example.demo.Exceptions.UserException;
 import com.example.demo.Model.Cart;
+import com.example.demo.Model.User;
 
 public interface CartService {
 	
-	public String addToCart(Integer  id,String Uuid)throws  CartException, UserException;
+	public User addToCart(Integer  id,String Uuid)throws  CartException, UserException;
 	
 	public Cart removeItemFromCart(Integer id,String Uuid)throws CartException, UserException;
 

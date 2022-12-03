@@ -11,6 +11,9 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -25,13 +28,26 @@ public class Cart {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer id;
 	
-	private Double Total;
+	private Double Total=0.00;
 	
-	private Integer Size;
+	private Integer Size=0;
 	
 	@OneToOne(cascade = CascadeType.ALL)
 	private User user;
 	
-	@OneToMany(cascade = CascadeType.ALL,mappedBy = "cart")
+	@OneToMany(cascade = CascadeType.ALL,mappedBy = "cart",orphanRemoval = true)
 	private List<CartItem> cartItem=new ArrayList<>();
+	
+	@JsonIgnore
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+
+	
+	
+	
 }

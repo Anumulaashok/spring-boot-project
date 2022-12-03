@@ -6,12 +6,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.DTO_and_ENUM.AdminDto;
+import com.example.demo.DTO_and_ENUM.UserDto;
 import com.example.demo.DTO_and_ENUM.UserLoginDto;
 import com.example.demo.Dao.AdminDao;
 import com.example.demo.Dao.LogInDao;
+import com.example.demo.Dao.UserDao;
 import com.example.demo.Exceptions.AdminException;
 import com.example.demo.Model.Admin;
 import com.example.demo.Model.LogIn;
+import com.example.demo.Model.User;
 import com.example.demo.Service.AdminService;
 
 import net.bytebuddy.utility.RandomString;
@@ -23,15 +26,18 @@ public class AdminServiceImpl implements AdminService{
 	private AdminDao admindao;
 	
 	@Autowired
+	private UserDao userDao;
+	
+	@Autowired
 	private LogInDao logInDao;
 
 	@Override
 	public Admin saveAdmin(AdminDto admin) throws AdminException {
 		
-		
+		User user= userDao.findByUserName(admin.getUserName());
 		
 		Admin ad= admindao.findByUserName(admin.getUserName());
-		if(ad!=null)
+		if(ad!=null||user!=null)
 			throw new AdminException("User Already Exist With The UserName ->"+admin.getUserName());
 		
 			Admin admin1= new Admin(admin.getEmail(),admin.getName(),admin.getUserName().trim(), admin.getPassword().trim());
@@ -84,7 +90,7 @@ public class AdminServiceImpl implements AdminService{
 
 
 	@Override
-	public LogIn adminLogIn(AdminDto admindto) throws AdminException {
+	public UserLoginDto adminLogIn(UserDto admindto) throws AdminException {
 		
 		Admin admin= admindao.findByUserName(admindto.getUserName());
 		
@@ -94,8 +100,8 @@ public class AdminServiceImpl implements AdminService{
 		LogIn login= new LogIn(admin.getUserName(), admin.getPassword(), RandomString.make(4), LocalDate.now());
 		
 		LogIn logindetails=  logInDao.save(login);
-				
-		return logindetails;
+				UserLoginDto dto=new UserLoginDto(logindetails.getUsername(), logindetails.getUuid());
+		return dto;
 	}
 
 

@@ -1,5 +1,6 @@
 package com.example.demo.Controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,9 +10,15 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.example.demo.DTO_and_ENUM.AdminDto;
+import com.example.demo.DTO_and_ENUM.UserDto;
+import com.example.demo.DTO_and_ENUM.UserLoginDto;
+import com.example.demo.DTO_and_ENUM.Uuid;
 import com.example.demo.Exceptions.CartException;
 import com.example.demo.Exceptions.CategoryException;
 import com.example.demo.Exceptions.ProductException;
@@ -19,10 +26,14 @@ import com.example.demo.Exceptions.UserException;
 import com.example.demo.Model.Cart;
 import com.example.demo.Model.Category;
 import com.example.demo.Model.Products;
+import com.example.demo.Model.User;
 import com.example.demo.Service.CartService;
 import com.example.demo.Service.CategoryService;
 import com.example.demo.Service.ProductService;
+import com.example.demo.Service.UserLoginService;
 import com.example.demo.Service.UserService;
+
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 
 @Controller
 public class UserController {
@@ -39,7 +50,8 @@ public class UserController {
 	@Autowired
 	private CartService cartService;
 	
-	
+	@Autowired
+	private UserLoginService userLoginService;
 	
 	
 	@GetMapping("get/catergories")
@@ -81,11 +93,11 @@ public class UserController {
 	}
 	
 	@PutMapping("add/cart/{uuid}")
-	public ResponseEntity<String> addToCart(@PathVariable("uuid") String uuid,@RequestParam("productId") Integer id) throws CartException, UserException{
+	public ResponseEntity<User> addToCart(@PathVariable("uuid") String uuid,@RequestParam("productId") Integer id) throws CartException, UserException{
 		
-		String c=	cartService.addToCart(id, uuid);
+		User c=	cartService.addToCart(id, uuid);
 		
-		return new ResponseEntity<String>(c,HttpStatus.OK);
+		return new ResponseEntity<User>(c,HttpStatus.OK);
 		
 	}
 	
@@ -107,6 +119,43 @@ public class UserController {
 		return new ResponseEntity<Cart>(c,HttpStatus.OK);
 		
 	}
+	@PostMapping("user/add")
+	public ResponseEntity<User> addUser(@RequestBody AdminDto userDto) throws UserException{
+		User user=	userService.saveUser(userDto);
+		return new ResponseEntity<User>(user,HttpStatus.ACCEPTED);
+	}
+	@PutMapping("user/update")
+	public ResponseEntity<User> updateUser(@RequestBody User user) throws UserException{
+		User user1= userService.updateUser(user);
+		return new ResponseEntity<User>(user1,HttpStatus.OK);
+		
+	}
+	
+	@DeleteMapping("user/delete")
+	public ResponseEntity<String> deleteUser(@RequestBody Uuid uuid ) throws UserException
+	{
+		String str=userService.deleteUser(uuid.getUuid());
+		return new ResponseEntity<String>(str,HttpStatus.OK);
+	}
 	
 	
+	@PostMapping("user/login")
+	public ResponseEntity<UserLoginDto> userLogin(@RequestBody UserDto userDto) throws UserException{
+	
+		UserLoginDto ud = userLoginService.userLogin(userDto);
+	
+		return new ResponseEntity<UserLoginDto>(ud,HttpStatus.OK);		
+	}
+	@DeleteMapping("user/logout")
+	public ResponseEntity<String> userLogout(@RequestBody Uuid uuid) throws UserException{
+		
+		String ss=	userLoginService.LogOut(uuid.getUuid());
+			return new ResponseEntity<String>(ss,HttpStatus.ACCEPTED);
+	}
+	
+	@GetMapping("getall")
+	public ResponseEntity<List<User>> getAllUsers(){
+		
+		return new ResponseEntity<List<User>>(userService.getAllUsers(),HttpStatus.OK);
+	}
 }

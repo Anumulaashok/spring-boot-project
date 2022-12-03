@@ -1,24 +1,30 @@
 package com.example.demo.Controller;
 
+import javax.websocket.server.PathParam;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.demo.DTO_and_ENUM.AdminDto;
 import com.example.demo.DTO_and_ENUM.CategoryDto;
 import com.example.demo.DTO_and_ENUM.ProductDto;
+import com.example.demo.DTO_and_ENUM.UserDto;
+import com.example.demo.DTO_and_ENUM.UserLoginDto;
+import com.example.demo.DTO_and_ENUM.Uuid;
 import com.example.demo.Exceptions.AdminException;
 import com.example.demo.Exceptions.CategoryException;
 import com.example.demo.Exceptions.ProductException;
 import com.example.demo.Model.Admin;
 import com.example.demo.Model.Category;
+import com.example.demo.Model.LogIn;
 import com.example.demo.Model.Products;
 import com.example.demo.Service.AdminService;
 import com.example.demo.Service.CategoryService;
@@ -98,8 +104,8 @@ public class AdminController {
 	}
 	
 	@PostMapping("/product/add") 
-	public ResponseEntity<String> addProduct(@RequestBody ProductDto product,@PathVariable("uuid") String uuid,@RequestParam("CategoryId") Integer categoryId ) throws CategoryException, AdminException{
-		
+	public ResponseEntity<String> addProduct(@RequestBody ProductDto product,@RequestHeader("uuid") String uuid,@RequestParam("CategoryId") Integer categoryId ) throws CategoryException, AdminException{
+		System.out.println(uuid);
 		boolean b1= productService.AddProduct(categoryId,uuid, product);
 		
 		return new ResponseEntity<String>("Product added succesfully ",HttpStatus.OK);
@@ -120,6 +126,17 @@ public class AdminController {
 		String str= productService.deleteProduct(id,uuid);
 		
 		return new ResponseEntity<String>(str, HttpStatus.OK);
+	}
+	
+	@PostMapping("admin/login")
+	public ResponseEntity<UserLoginDto> adminLogIn(@RequestBody UserDto adminDto) throws AdminException{ 
+		UserLoginDto login =adminService.adminLogIn(adminDto);
+		return new ResponseEntity<UserLoginDto>(login,HttpStatus.ACCEPTED);
+	}
+	@DeleteMapping("admin/logout")
+	public ResponseEntity<String> adminLogOut(@RequestBody Uuid uu) throws AdminException{
+		String str= adminService.adminLogOut(uu.getUuid());
+		return new ResponseEntity<String>(str,HttpStatus.OK);
 	}
 	
 }

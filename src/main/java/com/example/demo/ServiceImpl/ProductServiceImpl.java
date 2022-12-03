@@ -36,7 +36,7 @@ public class ProductServiceImpl implements ProductService {
 
 	@Override
 	public boolean AddProduct(Integer id, String uuid, ProductDto product) throws CategoryException, AdminException {
-
+			
 		Admin admin=isValidAdmin(uuid);
 		Admin A1 = admindao.findById(admin.getId())
 				.orElseThrow(() -> new CategoryException("Admin Not Avail With the id -> " + admin.getId()));
@@ -48,7 +48,8 @@ public class ProductServiceImpl implements ProductService {
 
 		Products p1 = new Products(product.getName(), product.getUrl(), product.getDesciption(), product.getPrice(),
 				product.isAvail());
-
+				p1.setPrice2(product.getPrice2());
+				p1.setUrl2(product.getUrl2());
 		p1.setCategory(c1);
 
 		Products pro = productsDao.save(p1);
@@ -119,10 +120,10 @@ public class ProductServiceImpl implements ProductService {
 	public List<Products> getProdutsInSortedDESC(Integer id) throws ProductException {
 		
 		return productsDao.getProductsInDESC(id);
-
+		
 	}
 	
-	public Admin isValidAdmin(String uuid)throws AdminException {
+	private Admin isValidAdmin(String uuid)throws AdminException {
 		
 		LogIn login=logInDao.findByUuid(uuid).orElseThrow(()-> new AdminException("Not valid admin"));
 		Admin admin=admindao.findByUserName(login.getUsername());
