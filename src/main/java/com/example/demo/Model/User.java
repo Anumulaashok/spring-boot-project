@@ -30,7 +30,9 @@ public class User {
 	
 	@OneToOne(cascade = CascadeType.ALL)
 	private Cart cart;
-//	private Order orders;
+	@OneToOne(cascade = CascadeType.ALL)
+	private Order order;
+	
 
 	public User(String userName, String password ) {
 		super();
