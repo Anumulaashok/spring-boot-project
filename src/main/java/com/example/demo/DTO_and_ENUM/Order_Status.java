@@ -1,6 +1,6 @@
 package com.example.demo.DTO_and_ENUM;
 
-public enum Status {
+public enum Order_Status {
 
 	
 		Ordered, 

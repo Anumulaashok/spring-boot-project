@@ -50,6 +50,8 @@ public class AdminController {
 	public ResponseEntity<Admin> addAdmin(@RequestBody AdminDto admin2) throws AdminException
 	{
 		
+		admin2.setEmail(admin2.getEmail().toLowerCase());
+		admin2.setUserName(admin2.getUserName().toLowerCase());
 		Admin admin1=adminService.saveAdmin(admin2);
 		
 		return new ResponseEntity<Admin>(admin1,HttpStatus.CREATED);
@@ -57,10 +59,12 @@ public class AdminController {
 	}
 	
 	@PutMapping("/admin/update")
-	public ResponseEntity<Admin> updateAdmin(@RequestBody Admin admin ) throws AdminException
+	public ResponseEntity<Admin> updateAdmin(@RequestBody Admin admin2 ) throws AdminException
 	{
+		admin2.setEmail(admin2.getEmail().toLowerCase());
+		admin2.setUserName(admin2.getUserName().toLowerCase());
 		
-		Admin admin1= adminService.updateAdminUserName(admin);
+		Admin admin1= adminService.updateAdminUserName(admin2);
 		
 		return new ResponseEntity<Admin>(admin1 , HttpStatus.OK);
 	}
@@ -128,12 +132,14 @@ public class AdminController {
 		return new ResponseEntity<String>(str, HttpStatus.OK);
 	}
 	
-	@PostMapping("admin/login")
+	@PostMapping("/admin/login")
 	public ResponseEntity<UserLoginDto> adminLogIn(@RequestBody UserDto adminDto) throws AdminException{ 
+	
+		adminDto.setUserName(adminDto.getUserName().toLowerCase());
 		UserLoginDto login =adminService.adminLogIn(adminDto);
 		return new ResponseEntity<UserLoginDto>(login,HttpStatus.ACCEPTED);
 	}
-	@DeleteMapping("admin/logout")
+	@DeleteMapping("/admin/logout")
 	public ResponseEntity<String> adminLogOut(@RequestBody Uuid uu) throws AdminException{
 		String str= adminService.adminLogOut(uu.getUuid());
 		return new ResponseEntity<String>(str,HttpStatus.OK);

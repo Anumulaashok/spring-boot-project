@@ -1,5 +1,6 @@
 package com.example.demo.Model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -18,16 +19,16 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @Entity
-public class Order {
+public class OrderDetails {
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE)
-	private Integer Id;
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private Integer orderId;
 	
-	@OneToMany(cascade = CascadeType.ALL,mappedBy = "order")
-	private List<Orders> orders;
+	@OneToMany(cascade = CascadeType.ALL,mappedBy = "orderDetails")
+	private List<Orders> orders= new ArrayList<>();
 	
-	@OneToOne(cascade = CascadeType.ALL)
+	@OneToOne(cascade = CascadeType.ALL,mappedBy = "order")
 	private User user;
 	
 	
@@ -35,14 +36,18 @@ public class Order {
 	public User getUser() {
 		return user;
 	}
+	
 	public void setUser(User user) {
 		this.user = user;
 	}
-	public Order(List<Orders> orders, User user) {
+
+	public OrderDetails(List<Orders> orders, User user) {
 		super();
 		this.orders = orders;
 		this.user = user;
 	}
+	
+	
 	
 	
 }

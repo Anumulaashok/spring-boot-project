@@ -8,7 +8,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 import com.example.demo.DTO_and_ENUM.PaymentMethod;
-import com.example.demo.DTO_and_ENUM.Status;
+import com.example.demo.DTO_and_ENUM.Order_Status;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -24,10 +24,6 @@ public class Payment {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer id;
 	
-	@Enumerated(EnumType.STRING)
-	private PaymentMethod type;
 	
-	@Enumerated(EnumType.STRING)
-	private Status status;
 	
 }

@@ -6,13 +6,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.DTO_and_ENUM.AdminDto;
+import com.example.demo.Dao.AddressDao;
 import com.example.demo.Dao.AdminDao;
 import com.example.demo.Dao.LogInDao;
 import com.example.demo.Dao.UserDao;
 import com.example.demo.Exceptions.UserException;
+import com.example.demo.Model.Address;
 import com.example.demo.Model.Admin;
 import com.example.demo.Model.Cart;
 import com.example.demo.Model.LogIn;
+import com.example.demo.Model.OrderDetails;
 import com.example.demo.Model.User;
 import com.example.demo.Service.UserLoginService;
 import com.example.demo.Service.UserService;
@@ -26,7 +29,8 @@ public class UserServiceImpl implements UserService{
 	@Autowired
 	private UserLoginService loginService;
 	
-	
+	@Autowired
+	private AddressDao addressDao; 
 
 	@Autowired
 	private LogInDao dao;
@@ -44,11 +48,12 @@ public class UserServiceImpl implements UserService{
 		if(ad!=null||admin!=null)
 			throw new UserException("User AlreadyExit With The UserName ->"+User.getUserName());
 			Cart c1= new Cart();
+			OrderDetails details=new OrderDetails();
 			User user1= new User(User.getUserName().trim(), User.getPassword().trim());
 			user1.setName(User.getName());
 			user1.setEmail(User.getEmail());
 			user1.setCart(c1);
-			
+			user1.setOrder(details);
 			return userdao.save(user1);
 		
 	}
@@ -71,6 +76,8 @@ public class UserServiceImpl implements UserService{
 		try {
 		String i= loginService.LogOut(uuid);
 		User u=userdao.findByUserName(user1.getUsername());
+		Address address= u.getAddress();
+		addressDao.delete(address);
 		userdao.delete(u);
 		
 		}catch (Exception e) {
@@ -78,7 +85,7 @@ public class UserServiceImpl implements UserService{
 			
 		}		
 		
-		return "Admin Deleted ";
+		return "user Deleted ";
 	}
 
 	@Override

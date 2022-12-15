@@ -27,7 +27,7 @@ public class Products {
 	private String name;
 	private String url;
 	private String url2;
-	private String desciption;
+	private String description;
 	private double price;
 	private double price2;
 	private boolean isAvail;
@@ -41,7 +41,7 @@ public class Products {
 		super();
 		this.name = name;
 		this.url = url;
-		this.desciption = desciption;
+		this.description = desciption;
 		this.price = price;
 		this.isAvail=isAvail;
 	}
@@ -97,11 +97,11 @@ public class Products {
 	}
 
 	public String getDesciption() {
-		return desciption;
+		return description;
 	}
 
 	public void setDesciption(String desciption) {
-		this.desciption = desciption;
+		this.description = desciption;
 	}
 
 	public String getUrl2() {

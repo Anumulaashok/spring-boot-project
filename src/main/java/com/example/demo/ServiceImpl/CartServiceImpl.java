@@ -57,6 +57,8 @@ public class CartServiceImpl implements CartService{
 		System.out.println("Hello");
 		
 		CartItem item= new CartItem(products.getId(), products.getPrice(), 1,cart);
+		item.setProductName(products.getName());
+		item.setUrl(products.getUrl());
 		if(cart.getCartItem().size()<=0) {
 			cart.setSize(1);
 			cart.setTotal(products.getPrice());
@@ -157,6 +159,8 @@ public class CartServiceImpl implements CartService{
 		
 		Cart cart= user.getCart();
 		CartItem item= new CartItem(products.getId(), products.getPrice(), 1, cart);
+		item.setProductName(products.getName());
+		item.setUrl(products.getUrl());
 		if(cart.getSize()<=0) {
 			
 			throw new UserException("Cart is Empty");
@@ -165,23 +169,29 @@ public class CartServiceImpl implements CartService{
 		else {
 		List<CartItem>	items=cart.getCartItem();
 		boolean b=false;
+		double ctotal=0;
+		int cquantity=0;
 		for(CartItem i:items) {
-			if(i.getProductId()==products.getId()&&i.getQuantity()==1&&quantity==0) {
-				removeItemFromCart(id, UuId);
-				break;
-			}
+
 			if(i.getProductId()==products.getId()&&quantity>0) {
-				
-				i.setPrice(i.getPrice()*quantity);
+				ctotal+=item.getPrice()*quantity;
+				cquantity+=quantity;
+				i.setPrice(item.getPrice()*quantity);
 				i.setQuantity(quantity);
-				cart.setSize(cart.getSize()-i.getQuantity()+quantity);
-				cart.setTotal(cart.getTotal()-i.getPrice());
 				b=true;
-				break;
 			}
+			else {
+				ctotal+=i.getPrice();
+				cquantity+=i.getQuantity();	
+			}
+			
+		}
+		if(b!=true) {
+			throw new  CartException("Item not found");
 		}
 		
-		
+		cart.setTotal(ctotal);
+		cart.setSize(cquantity);
 		}
 		cartDao.save(cart);
 		

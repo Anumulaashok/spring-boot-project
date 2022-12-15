@@ -12,4 +12,6 @@ public class CategoryDto {
 	private String name;
 	private String description;
 	private String image1;
+	private String image2;
+	
 }

@@ -52,7 +52,7 @@ public class CategoryServiceImpl implements CategoryService{
 		if(A1==null)
 				new CategoryException("Admin Not Avail With the id -> "+A1.getUserName());
 		
-		Category category= new Category(categoryDto.getName(),categoryDto.getDescription(), categoryDto.getImage1(),A1);
+		Category category= new Category(categoryDto.getName(),categoryDto.getDescription(), categoryDto.getImage1(),categoryDto.getImage2(),A1);
 		
 		return categoryDao.save(category);
 		

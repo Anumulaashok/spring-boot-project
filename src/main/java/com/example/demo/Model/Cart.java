@@ -32,7 +32,7 @@ public class Cart {
 	
 	private Integer Size=0;
 	
-	@OneToOne(cascade = CascadeType.ALL)
+	@OneToOne(cascade = CascadeType.ALL,mappedBy = "cart")
 	private User user;
 	
 	@OneToMany(cascade = CascadeType.ALL,mappedBy = "cart",orphanRemoval = true)

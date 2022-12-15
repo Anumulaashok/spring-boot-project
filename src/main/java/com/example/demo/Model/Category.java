@@ -29,6 +29,7 @@ public class Category {
 	private String name;
 	private String description;
 	private String image1;
+	private String image2;
 	
 	@OneToOne(cascade = CascadeType.ALL)
 	@JsonIgnore
@@ -38,11 +39,12 @@ public class Category {
 	@JsonIgnore
 	private List<Products> product=new ArrayList<Products>();
 
-	public Category(String name, String description, String image1,Admin admin) {
+	public Category(String name, String description, String image1,String image2,Admin admin) {
 		super();
 		this.name = name;
 		this.description = description;
 		this.image1 = image1;
+		this.image2 = image2;
 		this.admin=admin;
 	}
 

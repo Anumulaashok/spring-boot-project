@@ -25,8 +25,10 @@ public class CartItem {
 	private Integer cartitemId;
 	@Column(name = "productid")
 	private Integer productId;
-	
+	private String productName;
+	private String url;
 	private double price;
+	
 	
 	private Integer quantity;
 	
